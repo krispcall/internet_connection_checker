@@ -181,6 +181,7 @@ class InternetConnectionChecker {
   /// If at least one of the addresses is reachable
   /// we assume an internet connection is available and return `true`.
   /// `false` otherwise.
+  /// change my machhindra Neupane
   Future<bool> get hasConnection async {
     final Completer<bool> result = Completer<bool>();
     int length = addresses.length;
