@@ -16,21 +16,21 @@ void main() {
 
     test('''Shouldn't have any listeners attached''', () {
       expect(
-        InternetConnectionChecker().hasListeners,
+        InternetConnectionChecker('https://www.google.com').hasListeners,
         isFalse,
       );
     });
 
     test('''Unawaited call hasConnection should return a Future<bool>''', () {
       expect(
-        InternetConnectionChecker().hasConnection,
+        InternetConnectionChecker('https://www.google.com').hasConnection,
         isA<Future<bool>>(),
       );
     });
 
     test('''Awaited call to hasConnection should return a bool''', () async {
       expect(
-        await InternetConnectionChecker().hasConnection,
+        await InternetConnectionChecker('https://www.google.com').hasConnection,
         isA<bool>(),
       );
     });
@@ -39,7 +39,7 @@ void main() {
         '''Unawaited call to connectionStatus '''
         '''should return a Future<InternetConnectionStatus>''', () {
       expect(
-        InternetConnectionChecker().connectionStatus,
+        InternetConnectionChecker('https://www.google.com').connectionStatus,
         isA<Future<InternetConnectionStatus>>(),
       );
     });
@@ -48,98 +48,98 @@ void main() {
         '''Awaited call to connectionStatus '''
         '''should return a Future<InternetConnectionStatus>''', () async {
       expect(
-        await InternetConnectionChecker().connectionStatus,
+        await InternetConnectionChecker('https://www.google.com').connectionStatus,
         isA<InternetConnectionStatus>(),
       );
     });
 
     test('''We shouldn't have any listeners 1''', () {
       expect(
-        InternetConnectionChecker().hasListeners,
+        InternetConnectionChecker('https://www.google.com').hasListeners,
         isFalse,
       );
     });
 
     test('''We should have listeners 1''', () {
-      listener1 = InternetConnectionChecker().onStatusChange.listen((_) {});
+      listener1 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
       expect(
-        InternetConnectionChecker().hasListeners,
+        InternetConnectionChecker('https://www.google.com').hasListeners,
         isTrue,
       );
     });
 
     test('''We should have listeners 2''', () {
-      listener1 = InternetConnectionChecker().onStatusChange.listen((_) {});
-      listener2 = InternetConnectionChecker().onStatusChange.listen((_) {});
+      listener1 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
+      listener2 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
       expect(
-        InternetConnectionChecker().hasListeners,
+        InternetConnectionChecker('https://www.google.com').hasListeners,
         isTrue,
       );
     });
 
     test('''We should have listeners 3''', () async {
-      listener1 = InternetConnectionChecker().onStatusChange.listen((_) {});
+      listener1 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
       await listener1!.cancel();
-      listener2 = InternetConnectionChecker().onStatusChange.listen((_) {});
+      listener2 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
       expect(
-        InternetConnectionChecker().hasListeners,
+        InternetConnectionChecker('https://www.google.com').hasListeners,
         isTrue,
       );
     });
 
     test('''We shouldn't have any listeners 2''', () async {
-      listener1 = InternetConnectionChecker().onStatusChange.listen((_) {});
+      listener1 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
       await listener1!.cancel();
-      listener2 = InternetConnectionChecker().onStatusChange.listen((_) {});
+      listener2 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
       await listener2!.cancel();
       expect(
-        InternetConnectionChecker().hasListeners,
+        InternetConnectionChecker('https://www.google.com').hasListeners,
         isFalse,
       );
     });
 
     test('''We shouldn't have any listeners 1''', () {
       expect(
-        InternetConnectionChecker().hasListeners,
+        InternetConnectionChecker('https://www.google.com').hasListeners,
         isFalse,
       );
     });
 
     test('''We should have listeners 1 [isActivelyChecking]''', () {
-      listener1 = InternetConnectionChecker().onStatusChange.listen((_) {});
+      listener1 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
       expect(
-        InternetConnectionChecker().isActivelyChecking,
+        InternetConnectionChecker('https://www.google.com').isActivelyChecking,
         isTrue,
       );
     });
 
     test('''We should have listeners 2 [isActivelyChecking]''', () {
-      listener1 = InternetConnectionChecker().onStatusChange.listen((_) {});
-      listener2 = InternetConnectionChecker().onStatusChange.listen((_) {});
+      listener1 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
+      listener2 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
       expect(
-        InternetConnectionChecker().isActivelyChecking,
+        InternetConnectionChecker('https://www.google.com').isActivelyChecking,
         isTrue,
       );
     });
 
     test('''We should have listeners 3 [isActivelyChecking]''', () async {
-      listener1 = InternetConnectionChecker().onStatusChange.listen((_) {});
+      listener1 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
       await listener1!.cancel();
-      listener2 = InternetConnectionChecker().onStatusChange.listen((_) {});
+      listener2 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
       expect(
-        InternetConnectionChecker().isActivelyChecking,
+        InternetConnectionChecker('https://www.google.com').isActivelyChecking,
         isTrue,
       );
     });
 
     test('''We shouldn't have any listeners 2 [isActivelyChecking]''',
         () async {
-      listener1 = InternetConnectionChecker().onStatusChange.listen((_) {});
+      listener1 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
       await listener1!.cancel();
-      listener2 = InternetConnectionChecker().onStatusChange.listen((_) {});
+      listener2 = InternetConnectionChecker('https://www.google.com').onStatusChange.listen((_) {});
       await listener2!.cancel();
       expect(
-        InternetConnectionChecker().isActivelyChecking,
+        InternetConnectionChecker('https://www.google.com').isActivelyChecking,
         isFalse,
       );
     });

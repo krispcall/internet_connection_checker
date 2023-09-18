@@ -4,7 +4,7 @@ import 'package:internet_connection_checker/internet_connection_checker.dart';
 
 Future<void> main() async {
   // Check internet connection with singleton (no custom values allowed)
-  await execute(InternetConnectionChecker());
+  await execute(InternetConnectionChecker('https://www.google.com'));
 
   // Create customized instance which can be registered via dependency injection
   final InternetConnectionChecker customInstance =
@@ -23,7 +23,7 @@ Future<void> execute(
   // Simple check to see if we have Internet
   // ignore: avoid_print
   print('''The statement 'this machine is connected to the Internet' is: ''');
-  final bool isConnected = await InternetConnectionChecker().hasConnection;
+  final bool isConnected = await InternetConnectionChecker('https://www.google.com').hasConnection;
   // ignore: avoid_print
   print(
     isConnected.toString(),
@@ -33,14 +33,14 @@ Future<void> execute(
   // We can also get an enum instead of a bool
   // ignore: avoid_print
   print(
-    'Current status: ${await InternetConnectionChecker().connectionStatus}',
+    'Current status: ${await InternetConnectionChecker('https://www.google.com').connectionStatus}',
   );
   // Prints either InternetConnectionStatus.connected
   // or InternetConnectionStatus.disconnected
 
   // actively listen for status updates
   final StreamSubscription<InternetConnectionStatus> listener =
-      InternetConnectionChecker().onStatusChange.listen(
+      InternetConnectionChecker('https://www.google.com').onStatusChange.listen(
     (InternetConnectionStatus status) {
       switch (status) {
         case InternetConnectionStatus.connected:

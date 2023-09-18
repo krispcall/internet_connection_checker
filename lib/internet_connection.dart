@@ -1,11 +1,20 @@
+
+// ignore_for_file: join_return_with_assignment
+
 part of internet_connection_checker;
+
 
 /// This is a singleton that can be accessed like a regular constructor
 /// i.e. [InternetConnectionChecker()] always returns the same instance.
 class InternetConnectionChecker {
   /// This is a singleton that can be accessed like a regular constructor
   /// i.e. InternetConnectionChecker() always returns the same instance.
-  factory InternetConnectionChecker() => _instance;
+  String? domain;
+  // ignore: public_member_api_docs
+  factory InternetConnectionChecker(String domain) {
+    _instance.domain = domain;
+    return _instance;
+  }
 
   /// Creates an instance of the [InternetConnectionChecker]. This can be
   /// registered in any dependency injection framework with custom values for
@@ -15,16 +24,17 @@ class InternetConnectionChecker {
     this.checkInterval = DEFAULT_INTERVAL,
     List<AddressCheckOptions>? addresses,
   }) {
+
     this.addresses = addresses ??
         DEFAULT_ADDRESSES
             .map(
               (AddressCheckOptions e) => AddressCheckOptions(
-                address: e.address,
-                hostname: e.hostname,
-                port: e.port,
-                timeout: checkTimeout,
-              ),
-            )
+            address: e.address,
+            hostname: e.hostname,
+            port: e.port,
+            timeout: checkTimeout,
+          ),
+        )
             .toList();
 
     // immediately perform an initial check so we know the last status?
@@ -84,7 +94,7 @@ class InternetConnectionChecker {
   /// | 208.67.222.222 | OpenDNS    | https://use.opendns.com/                        |
   /// | 208.67.220.220 | OpenDNS    | https://use.opendns.com/                        |
   static final List<AddressCheckOptions> DEFAULT_ADDRESSES =
-      List<AddressCheckOptions>.unmodifiable(
+  List<AddressCheckOptions>.unmodifiable(
     <AddressCheckOptions>[
       AddressCheckOptions(
         address: InternetAddress(
@@ -147,13 +157,13 @@ class InternetConnectionChecker {
   }
 
   static final InternetConnectionChecker _instance =
-      InternetConnectionChecker.createInstance();
+  InternetConnectionChecker.createInstance();
 
   /// Ping a single address. See [AddressCheckOptions] for
   /// info on the accepted argument.
   Future<AddressCheckResult> isHostReachable(
-    AddressCheckOptions options,
-  ) async {
+      AddressCheckOptions options,
+      ) async {
     Socket? sock;
     try {
       sock = await Socket.connect(
@@ -181,7 +191,7 @@ class InternetConnectionChecker {
   /// If at least one of the addresses is reachable
   /// we assume an internet connection is available and return `true`.
   /// `false` otherwise.
-  /// change my machhindra Neupane
+  /// change By Machhindra Neupane
   Future<bool> get hasConnection async {
     final Completer<bool> result = Completer<bool>();
     int length = addresses.length;
@@ -189,7 +199,7 @@ class InternetConnectionChecker {
     for (final AddressCheckOptions addressOptions in addresses) {
       // ignore: unawaited_futures
       isHostReachable(addressOptions).then(
-        (AddressCheckResult request) {
+            (AddressCheckResult request) {
           length -= 1;
           if (!result.isCompleted) {
             if (request.isSuccess) {
@@ -212,7 +222,7 @@ class InternetConnectionChecker {
   /// [InternetConnectionStatus.disconnected] otherwise.
   Future<InternetConnectionStatus> get connectionStatus async {
     return await hasConnection
-        ? InternetConnectionStatus.connected
+        ? await checkServerAvailability(domain!)
         : InternetConnectionStatus.disconnected;
   }
 
@@ -235,6 +245,26 @@ class InternetConnectionChecker {
   //
   // If there are listeners, a timer is started which runs this function again
   // after the specified time in 'checkInterval'
+  Future<InternetConnectionStatus> checkServerAvailability(String domain) async {
+    InternetConnectionStatus currentStatus;
+    final String url = domain;
+    try {
+      final http.Response response = await http.head(Uri.parse(url));
+      if (response.statusCode == 200) {
+        currentStatus = InternetConnectionStatus.connected;
+        return currentStatus;
+      } else {
+        currentStatus = InternetConnectionStatus.disconnected;
+        return currentStatus;
+      }
+    } catch (e) {
+      currentStatus = InternetConnectionStatus.disconnected;
+      return currentStatus;
+    }
+  }
+
+
+
   Future<void> _maybeEmitStatusUpdate([
     Timer? timer,
   ]) async {
@@ -242,8 +272,8 @@ class InternetConnectionChecker {
     _timerHandle?.cancel();
     timer?.cancel();
 
-    final InternetConnectionStatus currentStatus = await connectionStatus;
-
+    InternetConnectionStatus currentStatus = await connectionStatus;
+    //currentStatus = await checkServerAvailability();
     // only send status update if last status differs from current
     // and if someone is actually listening
     if (_lastStatus != currentStatus && _statusController.hasListener) {
@@ -265,7 +295,7 @@ class InternetConnectionChecker {
 
   // controller for the exposed 'onStatusChange' Stream
   final StreamController<InternetConnectionStatus> _statusController =
-      StreamController<InternetConnectionStatus>.broadcast();
+  StreamController<InternetConnectionStatus>.broadcast();
 
   /// Subscribe to this stream to receive events whenever the
   /// [InternetConnectionStatus] changes. When a listener is attached
