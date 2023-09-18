@@ -26,12 +26,12 @@ class InternetConnectionChecker {
         DEFAULT_ADDRESSES
             .map(
               (AddressCheckOptions e) => AddressCheckOptions(
-                address: e.address,
-                hostname: e.hostname,
-                port: e.port,
-                timeout: checkTimeout,
-              ),
-            )
+            address: e.address,
+            hostname: e.hostname,
+            port: e.port,
+            timeout: checkTimeout,
+          ),
+        )
             .toList();
 
     // immediately perform an initial check so we know the last status?
@@ -91,7 +91,7 @@ class InternetConnectionChecker {
   /// | 208.67.222.222 | OpenDNS    | https://use.opendns.com/                        |
   /// | 208.67.220.220 | OpenDNS    | https://use.opendns.com/                        |
   static final List<AddressCheckOptions> DEFAULT_ADDRESSES =
-      List<AddressCheckOptions>.unmodifiable(
+  List<AddressCheckOptions>.unmodifiable(
     <AddressCheckOptions>[
       AddressCheckOptions(
         address: InternetAddress(
@@ -154,13 +154,13 @@ class InternetConnectionChecker {
   }
 
   static final InternetConnectionChecker _instance =
-      InternetConnectionChecker.createInstance();
+  InternetConnectionChecker.createInstance();
 
   /// Ping a single address. See [AddressCheckOptions] for
   /// info on the accepted argument.
   Future<AddressCheckResult> isHostReachable(
-    AddressCheckOptions options,
-  ) async {
+      AddressCheckOptions options,
+      ) async {
     Socket? sock;
     try {
       sock = await Socket.connect(
@@ -196,7 +196,7 @@ class InternetConnectionChecker {
     for (final AddressCheckOptions addressOptions in addresses) {
       // ignore: unawaited_futures
       isHostReachable(addressOptions).then(
-        (AddressCheckResult request) {
+            (AddressCheckResult request) {
           length -= 1;
           if (!result.isCompleted) {
             if (request.isSuccess) {
@@ -208,10 +208,14 @@ class InternetConnectionChecker {
         },
       );
     }
-    final InternetConnectionStatus customData =
-        await checkServerAvailability(domain!);
-    if (customData.name == InternetConnectionStatus.disconnected.name) {
-      result.complete(false);
+    try {
+      final InternetConnectionStatus customData =
+      await checkServerAvailability(domain!);
+      if (customData.name == InternetConnectionStatus.disconnected.name) {
+        result.complete(false);
+      }
+    }catch(exception) {
+      print(exception);
     }
     return result.future;
   }
@@ -295,7 +299,7 @@ class InternetConnectionChecker {
 
   // controller for the exposed 'onStatusChange' Stream
   final StreamController<InternetConnectionStatus> _statusController =
-      StreamController<InternetConnectionStatus>.broadcast();
+  StreamController<InternetConnectionStatus>.broadcast();
 
   /// Subscribe to this stream to receive events whenever the
   /// [InternetConnectionStatus] changes. When a listener is attached
