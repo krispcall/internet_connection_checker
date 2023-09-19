@@ -139,7 +139,7 @@ class InternetConnectionChecker {
   /// These should be globally available destinations.
   /// Default is [DEFAULT_ADDRESSES].
   ///
-  /// When [hasConnection] or [connectionStatus] is called,
+
   /// this utility class tries to ping every address in this list.
   ///
   /// The provided addresses should be good enough to test for data connection
@@ -191,28 +191,13 @@ class InternetConnectionChecker {
   /// change By Machhindra Neupane
   Future<bool> get hasConnection async {
     final Completer<bool> result = Completer<bool>();
-    int length = addresses.length;
-
-    for (final AddressCheckOptions addressOptions in addresses) {
-      // ignore: unawaited_futures
-      isHostReachable(addressOptions).then(
-            (AddressCheckResult request) {
-          length -= 1;
-          if (!result.isCompleted) {
-            if (request.isSuccess) {
-              result.complete(true);
-            } else if (length == 0) {
-              result.complete(false);
-            }
-          }
-        },
-      );
-    }
     try {
       final InternetConnectionStatus customData =
       await checkServerAvailability(domain!);
       if (customData.name == InternetConnectionStatus.disconnected.name) {
         result.complete(false);
+      } else {
+        result.complete(true);
       }
     }catch(exception) {
       print(exception);
